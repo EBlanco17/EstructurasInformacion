@@ -1,121 +1,207 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include <iostream>
+#include <conio.h>
+
 using namespace std;
-struct nodo {
-	int exp, coe;
-	struct nodo *sig, *ant;
+
+struct nodo{
+	struct nodo *siguiente;
+	int coeficiente, exponente;
 };
-void sumar(struct nodo *p);
-void imprimir(struct nodo *p);
 
+struct ListaPolinomios{
+	struct ListaPolinomios *siguiente;
+	struct nodo *polinomio;
+};
 
-int main() {
-	struct nodo *cab,*a,*n,*p; //apuntadores de trabajo
-	int numT1=0,numT2=0;
+int inicializarPolinomio(nodo **polinomio);
+int insertarEnPolinomio(nodo *polinomio, int coeficiente, int exponente);
 
-	system("color F0");
-	cout<<"--------------------------------"<<endl;
-	cout<<"          BIENVENIDO            "<<endl;
-	cout<<"--------------------------------"<<endl;
-	cout<<"**********LISTA DOBLES**********"<<endl;
-	cout<<"**********4. SUMA DE POLINOMIOS**********"<<endl;
-	
-	system("PAUSE");
-	system("cls");
-	cout<<endl;
+int inicializarListaPolinomios(ListaPolinomios **lista);
+int insertarPolinomio(ListaPolinomios *lista, nodo *polinomio);
 
-	cout<<"\n\tIngrese cuantos terminos tiene el 1er polinomio (No Mayor a 7): ";
-	cin>>numT1;
-	cout<<"\n\tIngrese el primer polinomio "<<endl;
-	cout<<"\n\t Coeficiente: a, Exponente: b, Variable: x \n\t\t\t ax^{b}"<<endl;
-	cab= new struct nodo();
-	cout<<"Ingrese el coeficiente: ";
-	cin>>cab->coe;
-	cout<<"Ingrese el exponente: ";
-	cin>>cab->exp;
-	cab->ant=NULL;
-	a=cab;
+void imprimirPolinomio(nodo *polinomio);
+void diferenciarPolinomio(nodo *polinomio);
+void imprimirLista(ListaPolinomios **lista);
+void sumarPolinomios(ListaPolinomios *lista, nodo *polinomio);
 
+void menuDiferenciacion();
+void menuSuma();
 
-	while(numT1-1 > 0) {
-		n = new struct nodo;
-		a->sig=n;
-		n->ant=a;
-		a=n;
-		cout<<"Ingrese el coeficiente: ";
-		cin>>n->coe;
-		cout<<"Ingrese el exponente: ";
-		cin>>n->exp;
-		p=a;
-		numT1--;
-	};
+int main(){
+	int opcion, salir=0;
+	do{
+		do{
+			cout<<"1) Sumar dos o mas polinomios"<<endl;
+			cout<<"2) Salir"<<endl;
+			cin>>opcion;
+		}while(opcion<1 || opcion>2);
+		switch(opcion){
+			case 1:
+			      menuSuma();
+			break;
+			case 2:
+				salir=1;
+			break;
+		}
+	}while(salir != 1);
+}
 
-	system("pause");
-	system("cls");
-	cout<<"Ingrese cuantos terminos tiene el 2do polinomio (No Mayor a 6): ";
-	cin>>numT2;
-	cout<<"\n\tIngrese el 2do polinomio: "<<endl;
-	cout<<"\n\t Coeficiente: a, Exponente: b, Variable: x \n\t\t\t ax^{b}"<<endl;
-	while(numT2 > 0) {
-		n = new struct nodo;
-		a->sig=n;
-		n->ant=a;
-		a=n;
-		cout<<"Ingrese el coeficiente: ";
-		cin>>n->coe;
-		cout<<"Ingrese el exponente: ";
-		cin>>n->exp;
-		p=a;
-		numT2--;
-	};
-
-	n->sig=NULL;
-
-	cout<<"\n\t LOS DOS POLINOMIOS SON: ";
-	p=cab;
-	imprimir(p);
-	cout<<"\n\t LA SUMA ENTRE LOS DOS POLINOMIOS ES: ";
-	p=cab;
-	sumar(p);
-	system("PAUSE");
+int inicializarPolinomio(nodo **polinomio){
+	*polinomio = (nodo*)malloc(sizeof(nodo));
+	if(*polinomio!=NULL){
+		(*polinomio)->siguiente=NULL;
+		(*polinomio)->exponente=-1;
+		return 1;
+	}
 	return 0;
 }
-void sumar(struct nodo *p) {
-	int aux=0,aux1=0,aux2=0,aux3=0,aux4=0,aux5=0,aux6=0;
-	while(p != NULL) {
-		switch(p->exp) {
-			case 0:
-				aux+=p->coe;
-				break;
-			case 1:
-				aux1+=p->coe;
-				break;
-			case 2:
-				aux2+=p->coe;
-				break;
-			case 3:
-				aux3+=p->coe;
-				break;
-			case 4:
-				aux4+=p->coe;
-				break;
-			case 5:
-				aux5+=p->coe;
-				break;
-			case 6:
-				aux6+=p->coe;
-				break;
+int insertarEnPolinomio(nodo *polinomio, int coeficiente, int exponente){
+	nodo *aux;
+	aux=polinomio;
+	while(aux->siguiente!=NULL){
+		if(aux->siguiente->exponente==exponente){
+			aux->siguiente->coeficiente+=coeficiente;
+			return 1;
+		}else if(aux->siguiente->exponente<exponente){
+			aux=aux->siguiente;
+		}else{
+			nodo *aux2;
+			aux2 = (nodo*)malloc(sizeof(nodo));
+			if(aux2==NULL) 
+				return 0;
+			aux2->coeficiente = coeficiente;
+			aux2->exponente = exponente;
+			aux2->siguiente = aux->siguiente;
+			aux->siguiente = aux2;
+			return 1;
 		}
-		p=p->sig;
 	}
-	cout<<"("<<aux6<<"x^6"<<") + ("<<aux5<<"x^5"<<") + ("<<aux4<<"x^4"<<") + ("<<aux3<<"x^3"<<") + ("<<aux2<<"x^2"<<") + ("<<aux1<<"x"<<") + ("<<aux<<")";
+	nodo *aux2;
+	aux2 = (nodo*)malloc(sizeof(nodo));
+	if(aux2==NULL) 
+		return 0;
+	aux2->coeficiente = coeficiente;
+	aux2->exponente = exponente;
+	aux2->siguiente = NULL;
+	aux->siguiente = aux2;
+	return 1;
+}
+
+int inicializarListaPolinomios(ListaPolinomios **lista){
+	*lista = (ListaPolinomios*)malloc(sizeof(ListaPolinomios));
+	if(*lista!=NULL){
+		(*lista)->siguiente=NULL;
+		return 1;
+	}
+	return 0;
+}
+int insertarPolinomio(ListaPolinomios *lista, nodo *polinomio){
+	ListaPolinomios *aux;
+	aux=lista;
+	while(aux->siguiente!=NULL){
+		aux=aux->siguiente;
+	}
+	ListaPolinomios *aux2;
+	if(inicializarListaPolinomios(&aux2)){
+		aux2->polinomio=polinomio;
+		imprimirPolinomio(aux2->polinomio);
+		aux->siguiente=aux2;
+		return 1;
+	}
+	else
+		return 0;
+}
+
+void imprimirPolinomio(nodo *polinomio){
+	int flag = 1;
+	nodo *aux = polinomio->siguiente;
+	while(aux!=NULL){
+		if(flag){
+			if(aux->coeficiente!=0){
+				flag=0;
+				cout<<aux->coeficiente;
+				if(aux->exponente>1)
+					cout<<"x^", aux->exponente;
+				else if(aux->exponente==1)
+					cout<<"x";
+			}
+		}else{
+			if(aux->coeficiente>0)
+				cout<<"+";
+			if(aux->coeficiente!=0){
+				cout<<aux->coeficiente;
+				if(aux->exponente>1)
+					cout<<"x^"<<aux->exponente;
+				else if(aux->exponente==1)
+					cout<<"x";
+			}
+		}
+		aux=aux->siguiente;
+	}
 	cout<<endl;
 }
 
-void imprimir(struct nodo *p) {
-	while(p != NULL) {
-		cout<<"+"<<p->coe<<"x^"<<p->exp;
-		p=p->sig;
+void imprimirLista(ListaPolinomios **lista){
+	ListaPolinomios *aux = (*lista)->siguiente;
+	while(aux!=NULL){
+		imprimirPolinomio(aux->polinomio);
+		aux=aux->siguiente;
 	}
-	cout<<endl;
+}
+void sumarPolinomios(ListaPolinomios *lista,nodo *polinomio){
+	ListaPolinomios *aux = lista->siguiente;
+	nodo *auxP;
+	while(aux!=NULL){
+		auxP = aux->polinomio->siguiente;
+		while(auxP!=NULL){
+			insertarEnPolinomio(polinomio,auxP->coeficiente, auxP->exponente);
+			auxP=auxP->siguiente;
+		}
+		aux=aux->siguiente;
+	}
+}
+
+
+void menuSuma(){
+	ListaPolinomios *lista;
+	inicializarListaPolinomios(&lista);
+	int cantidadPolinomios=0,salir=0;
+	char opcion;
+	nodo *polinomio;
+	int coeficiente,exponente;
+	do{
+		inicializarPolinomio(&polinomio);
+		cout<<"Ingresar el polinomio (ingresa -1 en el exponente para finalizar):"<<endl;
+		do{
+			cout<<"Coeficiente: ";
+			cin>>coeficiente;
+			cout<<"Exponente: ";
+			cin>>exponente;
+			if(exponente>=0)
+				insertarEnPolinomio(polinomio,coeficiente,exponente);
+		}while(exponente!=-1);
+		system("cls");
+		insertarPolinomio(lista, polinomio);
+		cantidadPolinomios++;
+		cout<<"Llevas "<<cantidadPolinomios<<" polinomio(s) ingresados"<<endl;
+		getch();
+		if(cantidadPolinomios>=2){
+			cout<<"¿Deseas ingresar otro polinomio?"<<endl;
+			cout<<"1) Si"<<endl;
+			cout<<"2) No"<<endl;
+			cin>>opcion;
+			if(opcion==2)salir=1;
+		}
+	}while(cantidadPolinomios<2 || salir == 1);
+	system("cls"); 
+	cout<<"Lista de polinomios:"<<endl;
+	imprimirLista(&lista);
+	cout<<"Suma:"<<endl;
+	inicializarPolinomio(&polinomio);
+	sumarPolinomios(lista,polinomio);
+	imprimirPolinomio(polinomio);
+	getch();
 }
 

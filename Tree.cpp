@@ -1,261 +1,337 @@
-//Ejemplo de un arbol binario de busqueda
+//Ejemplo de un arbol binario de busqueda, ordena alfabeticamente
 #include <iostream>
-#include <conio.h>
+
 using namespace std;
 
-struct Nodo {
-	int dato;
-	Nodo *sig;
-	Nodo *ant;
-	Nodo *padre;
+struct Node{
+string data;
+Node *left;
+Node *right;
+Node *parent;	
 };
 
-//Funciones
-void menu();
-Nodo *crearNodo(int, Nodo *);
-void insertarNodo(Nodo *&, int, Nodo *);
-void mostrarArbol(Nodo *, int);
-bool busqueda(Nodo *, int);
-void preOrden(Nodo *);
-void inOrden(Nodo *);
-void postOrden(Nodo *);
-void eliminar(Nodo *, int);
-void eliminarNodo(Nodo *);
-Nodo *minimo(Nodo *);
-void reemplazar(Nodo *,Nodo *);
-void destruirNodo(Nodo *);
-Nodo *arbol = NULL;
+Node *tree = NULL;
 
-int main() {
+//Funciones
+void main1();
+void readNode(Node *&tree, string n, Node *parent);
+void printTree(Node *tree, int counter);
+void eliminate(Node *tree, string n);
+void removeNode(Node *deletedNode);
+Node *deepestNode(Node *tree);
+void destroyNode(Node *node);
+void replace(Node *tree, Node *newNode);
+int heightTree(Node *tree);
+void preOrder(Node *tree);
+void inOrder(Node *tree);
+void postOrder(Node *tree);
+bool search(Node *tree, string n);
+
+int main(){
 	system("color f0");
-	menu();
+	cout<<"--------------------------------"<<endl;
+	cout<<"          BIENVENIDO            "<<endl;
+	cout<<"--------------------------------"<<endl;
+	cout<<"************ARBOLES************"<<endl;
+	cout<<"--------------------------------"<<endl;
+    
+    system("pause");
+	main1();
 	return 0;
 }
 
 //Funcion de menu
-void menu() {
-	int dato, opcion, contador=0;
-
-	do {
-		cout<<".:MENU:."<<endl;
+void main1(){
+	string data;
+	int option, counter=0;
+	int addition=0;
+	system("cls");
+	cout<<"Ingrese cuantos nodos desea insertar: ";
+	cin>>option;
+	do{
+		cout<<"Ingrese una palabra: ";
+				cin>>data;
+				readNode(tree, data, NULL); //Insertar nuevo nodo
+				cout<<endl;
+				system("pause");
+		option--;
+	}while(option != 0);
+	system("cls");
+	do{
+		cout<<"--------------------------------"<<endl;
+    	cout<<"              MENU              "<<endl;
+	    cout<<"--------------------------------"<<endl;
 		cout<<"1. Insertar un nuevo nodo"<<endl;
 		cout<<"2. Mostrar arbol completo"<<endl;
-		cout<<"3. Buscar un elemento"<<endl;
-		cout<<"4. Recorrer arbol en PreOrden"<<endl;
-		cout<<"5. Recorrer arbol en InOrden"<<endl;
-		cout<<"6. Recorrer arbol en PostOrden"<<endl;
-		cout<<"7. Eliminar un nodo"<<endl;
-		cout<<"8. Salir"<<endl;
-		cout<<"Ingrese opcion: ";
-		cin>>opcion;
-
-		switch(opcion) {
+		cout<<"3. Eliminar un nodo"<<endl;
+		cout<<"4. Operaciones"<<endl;
+		cout<<"5. Busqueda"<<endl;
+		cout<<"6. Salir"<<endl;
+		cout<<"\n\t Ingrese opcion: ";
+		cin>>option;
+		
+		switch(option){
 			case 1:
-				cout<<"Digite un numero: ";
-				cin>>dato;
-				insertarNodo(arbol, dato, NULL); //Insertar nuevo nodo
+				cout<<"Ingrese una palabra: ";
+				cin>>data;
+				readNode(tree, data, NULL); //Insertar nuevo nodo
 				cout<<endl;
 				system("pause");
 				break;
 			case 2:
 				cout<<"Mostrando arbol completo: \n\n";
-				mostrarArbol(arbol, contador);
-				cout<<endl;
-				system("pause");
-				break;
-			case 3:
-				cout<<"Digite el elemnto a buscar: ";
-				cin>>dato;
-				if(busqueda(arbol, dato) == true) {
-					cout<<"\n"<<dato<<" Ha sido encontrado en el arbol"<<endl;
-				} else {
-					cout<<"\n"<<dato<<" No se ha encontrado el dato en el arbol"<<endl;
+				if(tree == NULL){
+					cout<<"\n\t\tArbol Vacio!!!"<<endl;
+				}else{
+				printTree(tree, counter);	
 				}
 				cout<<endl;
 				system("pause");
 				break;
-			case 4:
-				cout<<"Recorrido en PreOrden: "<<endl;
-				preOrden(arbol);
-				cout<<"\n\n";
-				system("pause");
-				break;
-			case 5:
-				cout<<"Recorrido en InOrden: "<<endl;
-				inOrden(arbol);
-				cout<<"\n\n";
-				system("pause");
-				break;
-			case 6:
-				cout<<"Recorrido en PostOrden: "<<endl;
-				postOrden(arbol);
-				cout<<"\n\n";
-				system("pause");
-				break;
-			case 7:
+			case 3:
 				cout<<"Eliminar nodo: "<<endl;
-				cout<<"Digite el numero a eliminar: ";
-				cin>>dato;
-				eliminar(arbol, dato);
+				cout<<"Ingrese la palabra a eliminar: ";
+				cin>>data;
+				eliminate(tree, data);
+				cout<<"\n\t Nodo eliminado...";
 				cout<<"\n\n";
 				system("pause");
+				break;
+			case 4:
+				cout<<"--------------------------------"<<endl;
+    			cout<<"          OPERACIONES          "<<endl;
+	   			cout<<"--------------------------------"<<endl;
+				cout<<"1. Altura del arbol"<<endl;
+				cout<<"2. Impresion PreOrden"<<endl;
+				cout<<"3. Impresion InOrden"<<endl;
+				cout<<"4. Impresion PostOrden"<<endl;
+				cout<<"\n\t Ingrese opcion: ";
+				
+				cin>>option;
+				switch(option){
+					
+					case 1:
+						cout<<"Altura del arbol"<<endl;
+						cout<<"La altura es: "<<heightTree(tree)+1;
+						cout<<"\n\n";
+						system("pause");
+						break;
+					case 2:
+						cout<<"Impresion PreOrden"<<endl;
+						preOrder(tree);
+						cout<<"\n\n";
+						system("pause");
+						break;
+					case 3:
+						cout<<"Impresion InOrden"<<endl;
+						inOrder(tree);
+						cout<<"\n\n";
+						system("pause");
+						break;
+					case 4:
+						cout<<"Impresion PostOrden"<<endl;
+						postOrder(tree);
+						cout<<"\n\n";
+						system("pause");
+						break;
+			
+				}
+				
+				break;
+				case 5:
+						cout<<"Busqueda"<<endl;
+						cout<<"Ingrese palabra a buscar: ";
+						cin>>data;
+						if(search(tree, data) == true){
+						cout<<"\n\t"<<data<<" Ha sido encontrada en el arbol :)"<<endl;
+						}else{
+						cout<<"\n\t"<<" No se ha encontrado "<<data<< " en el arbol..."<<endl;
+						}
+						cout<<"\n\n";
+						system("pause");
+						break;
 		}
 		system("cls");
-	} while(opcion != 8);
+	}while(option != 6);
 }
 
-//Funcion para crear nodos
-Nodo *crearNodo(int n, Nodo *padre) {
-	Nodo *nuevo_nodo = new Nodo();
-
-	nuevo_nodo->dato = n;
-	nuevo_nodo->sig = NULL;
-	nuevo_nodo->ant = NULL;
-	nuevo_nodo->padre = padre;
-	return nuevo_nodo;
-}
 
 //Funcion para insertar elementos en el arbol
-void insertarNodo(Nodo *&arbol, int n, Nodo *padre) {
-	if(arbol == NULL) { //si el arbol esta vacio
-		Nodo *nuevo_nodo = crearNodo(n, padre);
-		arbol = nuevo_nodo;
-	} else { //condiciones para agregar el elemento
-		int valorRaiz = arbol->dato;
-		if(n < valorRaiz) {
-			insertarNodo(arbol->ant, n, arbol);
-		} else {
-			insertarNodo(arbol->sig, n, arbol);
+void readNode(Node *&tree, string n, Node *parent){
+	string root; //valor de el nodo raiz
+	if(tree == NULL){ //si el arbol esta vacio
+	
+	Node *new_node = new Node();
+	new_node->data = n;
+	new_node->left = NULL;
+	new_node->right = NULL;
+	new_node->parent = parent;
+	tree = new_node;
+	}
+	else{ //condiciones para agregar el elemento 
+		 root = tree->data;
+		if(n < root){
+			readNode(tree->left, n, tree);
+		}else{
+		    readNode(tree->right, n, tree);
 		}
 	}
 }
 
-//Funcion mostrar arbol
-void mostrarArbol(Nodo *arbol, int contador) {
-	if(arbol == NULL) {
+//Muestra el arbol
+void printTree(Node *tree, int counter){
+	if(tree == NULL){
 		return;
-	} else {
-		mostrarArbol(arbol->sig, contador+1);
-		for(int i=0; i < contador; i++) {
-			cout<<"   ";
+	}else{
+		printTree(tree->right, counter+1);
+		for(int i=0; i < counter; i++){
+			cout<<"   :.  ";
 		}
-		cout<<arbol->dato<<endl;
-		mostrarArbol(arbol->ant, contador+1);
+		cout<<tree->data<<endl;
+		printTree(tree->left, counter+1);
 	}
-
 }
 
-//Funcion buscar elemento en arbol
-bool busqueda(Nodo *arbol, int n) {
-	if(arbol == NULL) {
-		return false;
-	} else if(arbol->dato == n) {
-		return true;
-	} else if(n < arbol->dato) {
-		return busqueda(arbol->ant, n);
-	} else {
-		return busqueda(arbol->sig, n);
+//Funcion eliminar nodo
+void eliminate(Node *tree, string n){
+	if(tree == NULL){
+		return;
+	}else if(n < tree->data){
+		eliminate(tree->left, n);
 	}
+	else if(n > tree->data){
+		eliminate(tree->right, n);
+	}
+	else{
+		removeNode(tree);
+	}
+}
 
+//Determina el nodo mas izquierdo
+Node *deepestNode(Node *tree){
+	if(tree == NULL){
+		return NULL;
+	}
+	if(tree->left){
+		return deepestNode(tree->left);
+	}
+	else{ //si no tiene nodo izq
+		return tree; //retornar el mismo nodo
+	}
+}
+
+//Reemplaza dos nodos
+void replace(Node *tree, Node *newNode){
+	if(tree->parent){
+		//tree->parent asignarle su nuevo hijo
+		if(tree->data == tree->parent->left->data){
+			tree->parent->left = newNode;
+		}
+		else if(tree->data == tree->parent->right->data){
+			tree->parent->right = newNode;
+		}
+	}
+	if(newNode){
+	//hijo asignarle su nuevo padre	
+	newNode->parent = tree->parent;
+	}
+}
+
+//Destruye un nodo
+void destroyNode(Node *node){
+	node->left = NULL;
+	node->right = NULL;
+	
+	delete node;
+}
+
+
+//Elimina el nodo encontrado
+void removeNode(Node *deletedNode){
+	if(deletedNode->left && deletedNode->right){
+		Node *deepest = deepestNode(deletedNode->right);
+		deletedNode->data = deepest->data;
+		removeNode(deepest);
+	
+	}
+	else if(deletedNode->left){
+		replace(deletedNode, deletedNode->left);
+		destroyNode(deletedNode);
+	}
+	else if(deletedNode->right){
+		replace(deletedNode, deletedNode->right);
+		destroyNode(deletedNode);
+	}
+	else{//Nodo Hoja
+		replace(deletedNode, NULL);
+		destroyNode(deletedNode);
+	}
+}
+
+int heightTree(Node *tree){
+	int AltIzq, AltDer;
+
+    if(tree == NULL){
+    	return -1;	
+	}
+    else{
+        AltIzq = heightTree(tree->left);
+        AltDer = heightTree(tree->right);
+
+        if(AltIzq>AltDer)
+            return AltIzq+1;
+        else
+            return AltDer+1;
+    }
 }
 
 //Funcion recorrido en profundidad - preOrden
-void preOrden(Nodo *arbol) {
-	if(arbol == NULL) {
+void preOrder(Node *tree){
+	if(tree == NULL){
 		return;
-	} else {
-		cout<<arbol->dato<<" - ";
-		preOrden(arbol->ant);
-		preOrden(arbol->sig);
+	}else{
+		cout<<tree->data<<" -> ";
+		preOrder(tree->left);
+		preOrder(tree->right);
 	}
 }
 
 //Funcion recorrido en profundidad InOrden
-void inOrden(Nodo *arbol) {
-	if(arbol == NULL) {
+void inOrder(Node *tree){
+	if(tree == NULL){
 		return;
-	} else {
-		inOrden(arbol->ant);
-		cout<<arbol->dato<<" - ";
-		inOrden(arbol->sig);
+	}else{
+		inOrder(tree->left);
+		cout<<tree->data<<" -> ";
+		inOrder(tree->right);
 	}
-
+	
 }
 
 //Funcion recorrido en profundidad PostOrden
-void postOrden(Nodo *arbol) {
-	if(arbol == NULL) {
+void postOrder(Node *tree){
+	if(tree == NULL){
 		return;
-	} else {
-		postOrden(arbol->ant);
-		postOrden(arbol->sig);
-		cout<<arbol->dato<<" - ";
-	}
-}
-//Funcion eliminar nodo
-void eliminar(Nodo *arbol, int n) {
-	if(arbol == NULL) {
-		return;
-	} else if(n < arbol->dato) {
-		eliminar(arbol->ant, n);
-	} else if(n > arbol->dato) {
-		eliminar(arbol->sig, n);
-	} else {
-		eliminarNodo(arbol);
-	}
-}
-//Funcion para determinar el nodo mas izquierdo
-Nodo *minimo(Nodo *arbol) {
-	if(arbol == NULL) {
-		return NULL;
-	}
-	if(arbol->ant) {
-		return minimo(arbol->ant);
-	} else { //si no tiene nodo izq
-		return arbol; //retornar el mismo nodo
+	}else{
+		postOrder(tree->left);
+		postOrder(tree->right);
+		cout<<tree->data<<" -> ";
 	}
 }
 
-//Funcion para reemplazar dos nodos
-void reemplazar(Nodo *arbol, Nodo *nuevoNodo) {
-	if(arbol->padre) {
-		//arbol->padre asignarle su nuevo hijo
-		if(arbol->dato == arbol->padre->ant->dato) {
-			arbol->padre->ant = nuevoNodo;
-		} else if(arbol->dato == arbol->padre->sig->dato) {
-			arbol->padre->sig = nuevoNodo;
-		}
-	}
-	if(nuevoNodo) {
-		//hijo asignarle su nuevo padre
-		nuevoNodo->padre = arbol->padre;
-	}
+//Funcion buscar elemento en arbol
+bool search(Node *tree, string n){
+if(tree == NULL){
+	return false;
+}else if(tree->data == n){
+	return true;
+}	
+else if(n < tree->data){
+	return search(tree->left, n);
 }
-
-//Funcion para destruir un nodo
-void destruirNodo(Nodo *nodo) {
-	nodo->ant = NULL;
-	nodo->sig = NULL;
-
-	delete nodo;
+else{
+	return search(tree->right, n);
 }
-
-
-//Funcion eliminar nodo encontrado
-void eliminarNodo(Nodo *nodoEliminar) {
-	if(nodoEliminar->ant && nodoEliminar->sig) {
-		Nodo *menor = minimo(nodoEliminar->sig);
-		nodoEliminar->dato = menor->dato;
-		eliminarNodo(menor);
-	} else if(nodoEliminar->ant) {
-		reemplazar(nodoEliminar, nodoEliminar->ant);
-		destruirNodo(nodoEliminar);
-	} else if(nodoEliminar->sig) {
-		reemplazar(nodoEliminar, nodoEliminar->sig);
-		destruirNodo(nodoEliminar);
-	} else { //Nodo Hoja
-		reemplazar(nodoEliminar, NULL);
-		destruirNodo(nodoEliminar);
-	}
+	
 }
 

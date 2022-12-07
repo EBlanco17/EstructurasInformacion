@@ -1,108 +1,135 @@
-#include <iostream> 
-#include <string.h> 
-#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <iostream>
 using namespace std;
-void menu();
-void verificar();
-int main(){
-	cout<<"Bienvenido: Programa que verifica si un correo electronico es correcto"<<endl;
-	menu();
+int main()
+{
+	system ("color f0");
+const char CaracteresIndeseados[] = {' ','!','"','#','$','%','&','/','(',')',
+'*','+',',','-','/',':',';','<','=','>','?','[','\ ',']','^','`','{','|','}' };
+    
+char email[35], *dominio[5] = {".net", ".com", ".es",".org",".co"};
+    unsigned int i;
+    int contador = 0, contador2 =0, contador3=0;
+    char caracter='@';
+    char punto='.';
+    char raya='_';
+    int verificador=0;
+    
+    
+    cout<<"Ingrese la direccion de correo: "<<endl;
+    cin>>email;
+    
+    
+    //Buscamos en la cadena si hay presencia de @ o no
+    //strchr se busca en el char el caracter seleccionado
+     if(strchr(email, '@') != NULL){
+         cout<<"Si hay arroba."<<endl;
+     }
+      else{
+         
+    cout<<"Correo invalido-No se encontro \'@'."<<endl;
+    verificador=2;
+	}
+	
+	
+	//Buscamos en la cadena si hay presencia de los dominios o no
+    //strchr se busca en el char el caracter seleccionado
+    if(strstr(email,".com")){
+	
+   cout<<"Dominio CORRECTO: "<<dominio[1];
+   cout<<""<<endl;
+
+  	}else{
+  		
+	 if(strstr(email,".es")){
+	
+   cout<<"Dominio CORRECTO: "<<dominio[2];
+   cout<<""<<endl;
+ 
+	}else{
+		
+	 if(strstr(email,".net")){
+	
+   cout<<"Dominio CORRECTO: "<<dominio[0];
+   cout<<""<<endl;
+ 
+	}else{
+		
+	 if(strstr(email,".org")){
+	
+   cout<<"Dominio CORRECTO: "<<dominio[3];
+   cout<<""<<endl;
+ 
+	}else{
+		
+	 if(strstr(email,".co")){
+	
+   cout<<"Dominio CORRECTO: "<<dominio[4];
+   cout<<""<<endl;
+ 
+	}else{
+	cout<<"No posee ningun dominio.\n";
+	verificador=2;
+}}}}}
+    //Buscamos en la cadena si hay presencia de caracteres especiales o no
+    //strlen da el tamaño de todo el correo
+    for(int i = 0; i < strlen(email); i++){
+    	 for (int j = 0; j < strlen(CaracteresIndeseados); j++){
+    	 	 if (email[i] == CaracteresIndeseados[j]){
+			 
+			 cout<<"ingreso un caracter especial: "<<"' "<<CaracteresIndeseados[j]<<" '"<<" Error en el caracter: "<<i+1<<endl;
+			 verificador=2;
+		 }
+	}}
+
+	
+    //Buscamos en la cadena si hay presencia de mas de un @ o no
+    //agregamos contador para verificar la cantidad de @ dentro del email
+
+	for(int i=0; i<email[i]; i++){
+		if(email[i] == caracter){
+			contador++;
+				if (contador >=2){
+				cout<<"El correo es incorrecto posee mas de un @ "<<"Error en el caracter: "<<i+1<<endl;
+				verificador=2;
+			}
+			
+		}
+	} 
+	
+    //Buscamos en la cadena si hay presencia de mas de un . o no
+    //agregamos contador para verificar la cantidad de . dentro del email
+ 	for(int i=0; i<email[i]; i++){
+		if(email[i] == punto){
+			contador2++;
+				if (contador2 >=2){
+				cout<<"El correo es incorrecto posee mas de un '.' "<<"Error en el caracter: "<<i+1<<endl;
+				verificador=2;
+			}
+			
+		}
+	}	 
+		for(int i=0; i<email[i]; i++){
+		if(email[i] == raya){
+			contador3++;
+				if (contador3 >=2){
+				cout<<"El correo es incorrecto posee mas de un '_' "<<"Error en el caracter: "<<i+1<<endl;
+				verificador=2;
+			}
+			
+		}
+	}	 
+   	//ya terminada toda la revision se da a conocer con el verificador si el correo escrito es correcto o no 
+	if(verificador==2){
+		cout<<"\n******CORREO INCORRECTO******\n";
+	}
+	if(verificador==0){
+		cout<<"\n******CORREO CORRECTO******\n";
+	}
+	
+	
 	system("PAUSE");
 	return 0;
 }
-void menu(){
-	verificar();
-}
-void verificar(){
-	string correoi;
-	int pal=0;
-	int arroba=0;
-	int tamanio=0;
-	int error=0;
-	int contArroba=0;
-	int contPuntos=0;
-	int posPuntos=0;
-	
-	cout<<"Ingrese correo a verificar: "<<endl;
-	cin>>correoi;
-	
-	int cont1=0;
-	while(cont1<correoi.size()){
-		tamanio=tamanio+1;
-		cont1++;
-	}
-	char correo[tamanio];
-	int cont2=0;
-	while(cont2<tamanio){
-		correo[cont2]=correoi[cont2];
-		cont2++;
-	}
 
-	int cont3=0;
-	while(cont3<tamanio){
-		if(pal==0 && correo[cont3]=='@'){
-		cout<<"Error"<<endl;
-		cout<<"No se permite arroba en la posicion: 0";
-		  error=100;
-		  break;
-	}
-	if(correo[cont3]=='@'){
-	contArroba=cont3;	
-	arroba=arroba+1;	
-	}
-	if(correo[cont3]=='.'){	
-	posPuntos=cont3;
-	contPuntos=contPuntos+1;
-	}
-	pal=pal+1;
-		cont3++;
-	}
-	if(contPuntos>1){
-	cout<<"Error"<<endl;
-	cout<<"Existe mas de un punto en la posicion: "<<posPuntos<<endl;;
-	
-	}	
-	if(arroba>1){
-	cout<<"Error"<<endl;
-	cout<<"Existe mas de un arroba en la posicion: "<<contArroba<<endl;
-	
-	}	
-	else{
-		int cont4=0;
-		while(cont4<contArroba){
-			if(correo[cont4]=='~'||correo[cont4]=='`'||correo[cont4]=='|'||correo[cont4]=='•'||correo[cont4]=='?'||correo[cont4]=='÷'||correo[cont4]=='×'||correo[cont4]=='¶'||correo[cont4]=='£'||correo[cont4]=='¢'||correo[cont4]==','||correo[cont4]==' '||correo[cont4]=='^'||correo[cont4]=='°'||correo[cont4]=='='||correo[cont4]=='{'||correo[cont4]=='}'||correo[cont4]=='%'||correo[cont4]=='©'||correo[cont4]=='®'||correo[cont4]=='™'||correo[cont4]=='<'||correo[cont4]=='>'||correo[cont4]=='#'||correo[cont4]=='$'||correo[cont4]=='&'||correo[cont4]=='+'||correo[cont4]=='/'||correo[cont4]=='*'||correo[cont4]==':'||correo[cont4]==';'||correo[cont4]=='!'){
-	cout<<"Existe algun simbolo no permitido en la posicion: "<< cont4<<endl; 
-	error=error+1;
-		}
-	cont4++;
-	}
-	
-	int cont5=0;
-	while(cont5<tamanio){
-	if(error>0){
-		break;
-	}
-	if(correo[tamanio-1]=='m'&&correo[tamanio-2]=='o'&& correo[tamanio-3]=='c'|| correo[tamanio-1]=='o'  && correo[tamanio-2]=='c' ){
-		cout<<"Elcorreo ingresado "<<correoi<<" es correcto..."<<endl;
-		break;
-	}
-	else{
-	cout<<"Existe un error en el correo digite un dominio valido. Ejemplo:"<<endl;
-	cout<<".com"<<endl;
-	cout<<".co"<<endl;
-	break;
-	} 
-	cont5++;	
-	}
-	}
-	char opc;
-
-	cout<<"Desea verificar otro correo s/n"<<endl;
-	cin>>opc;
-	if(opc == 's'){
-		menu();
-	}else{
-	if(opc == 'n'){
-	cout<<"Vuelva pronto..."<<endl;
-	system("EXIT");}}
-}
